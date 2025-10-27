@@ -5,6 +5,9 @@
     {
       "AbsoluteMoniker": "D:0:0:{0AA41C66-F2AB-41BF-85D2-7ADD1C96BE2F}|Car.vcxproj|D:\\UnrealProject\\Cpp\\Car\\Car.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{0AA41C66-F2AB-41BF-85D2-7ADD1C96BE2F}|Car.vcxproj|solutionrelative:Car.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0AA41C66-F2AB-41BF-85D2-7ADD1C96BE2F}|Car.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.38.33130\\INCLUDE\\VECTOR||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,8 +17,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "vector",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\include\\vector",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\include\\vector",
+              "ViewState": "AgIAAEwDAAAAAAAAAAAawF0DAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-10-27T15:16:43.592Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -24,7 +38,7 @@
               "RelativeDocumentMoniker": "Car.cpp",
               "ToolTip": "D:\\UnrealProject\\Cpp\\Car\\Car.cpp",
               "RelativeToolTip": "Car.cpp",
-              "ViewState": "AgIAACkAAAAAAAAAAAAAAOwAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABwBAAAAAAAAAAAqwCQBAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-10-26T13:07:02.914Z",
               "EditorCaption": ""

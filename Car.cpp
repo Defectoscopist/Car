@@ -108,23 +108,35 @@ public:
 
 };
 
+
 class Car
 {
 
 public:
+
     string Name;
     float MaxSpeed;
     unique_ptr<Engine> CarEngine;
     Vector2D Position = Vector2D();
 
+    static int TotalCars;
+    
 public:
 
-    Car() : Name("Unknown"), MaxSpeed(0.f), CarEngine(nullptr) { cout << "Car created\n"; };
-    Car(string name, float speed, unique_ptr<Engine> engine = nullptr) : Name(name), MaxSpeed(speed), CarEngine(move(engine)) { cout << Name << " created\n"; };
+    Car() : Name("Unknown"), MaxSpeed(0.f), CarEngine(nullptr)
+    {
+        cout << "Car created\n";
+        TotalCars++;
+    }
+    Car(string name, float speed, unique_ptr<Engine> engine = nullptr) : Name(name), MaxSpeed(speed), CarEngine(move(engine))
+    {
+        cout << Name << " created\n";
+        TotalCars++;
+    }
 
     ~Car() { cout << "Car " << Name << " deleted\n"; };
 
-    void ShowCar() noexcept
+    void ShowCar() const noexcept
     {
         cout << Name << "\t max speed: " << MaxSpeed << '\t';
         if (CarEngine != nullptr)
@@ -137,6 +149,11 @@ public:
         }
     }
 
+    static void PrintTotalCars() noexcept
+    {
+        cout << "Total Cars: " << TotalCars << '\n';
+    }
+
     void Move(Vector2D DeltaMove) noexcept
     {
         Position + DeltaMove;
@@ -146,13 +163,27 @@ public:
     {
         cout << Name << " is at " << Position.X << ", " << Position.Y << " point\n";
     }
+
+    void ReplaceEngine(unique_ptr<Engine> newEngine)
+    {
+        CarEngine = move(newEngine);
+    }
+
+    void UpgradeEngine(int hp)
+    {
+        CarEngine->HorsePower += hp;
+    }
 };
+
+int Car::TotalCars = 0;
 
 class Garage
 {
 
 public:
+
     vector<unique_ptr<Car>> Cars;
+    vector<unique_ptr<Engine>> Engines;
 
     Garage() {};
 
@@ -165,6 +196,22 @@ public:
         unique_ptr<Car> car = make_unique<Car>();
         Cars.emplace_back(move(car));
     }
+
+    void AddEngine(unique_ptr<Engine> engine)
+    {
+        Engines.emplace_back(move(engine));
+    }
+    void AddEngine(int hp, EngineType eType)
+    {
+        unique_ptr<Engine> engine = make_unique<Engine>(hp, eType);
+        Engines.emplace_back(move(engine));
+    }
+    void AddEngine()
+    {
+        unique_ptr<Engine> engine = make_unique<Engine>();
+        Engines.emplace_back(move(engine));
+    }
+
 
 
     void ShowCars()
@@ -229,12 +276,29 @@ public:
         return closest_car;
     }
 
+    Car* FindCarByName(string& name) const
+    {
+        if (Cars.empty())
+        {
+            return nullptr;
+        }
+
+        for (size_t i = 0; i < Cars.size(); i++)
+        {
+            if (Cars[i]->Name == name)
+            {
+                return Cars[i].get();
+            }
+        }
+        return nullptr;
+    }
+
 };
 
 
 int main()
 {
-
+    
     Car* MyCar = new Car("Kia Rio", 180);
     cout << MyCar->Name << " has max speed " << MyCar->MaxSpeed << '\n';
     delete MyCar;
@@ -248,4 +312,5 @@ int main()
         Garage1->AddCar();
     }
     delete Timer;
+    Car::PrintTotalCars();
 }
