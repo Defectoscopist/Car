@@ -1,5 +1,6 @@
 ﻿
 #include <iostream>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <chrono>
@@ -10,6 +11,44 @@ enum class EngineType
     Gasoline,
     Diesel,
     Electricity
+};
+
+struct Vector2D
+{
+    float X;
+    float Y;
+
+    Vector2D() : X(0.f), Y(0.f) {};
+    Vector2D(float x, float y) : X(x), Y(y) {};
+
+    Vector2D operator - (Vector2D& otherVector)
+    {
+        X -= otherVector.X;
+        Y -= otherVector.Y;
+    }
+
+    Vector2D operator + (Vector2D& otherVector)
+    {
+        X += otherVector.X;
+        Y += otherVector.Y;
+    }
+
+    Vector2D operator * (int& value)
+    {
+        X *= value;
+        Y *= value;
+    }
+
+    Vector2D operator / (int& value)
+    {
+        X /= value;
+        Y /= value;
+    }
+
+    float DistanceTo(Vector2D& otherVector) const
+    {
+        return sqrt(pow(X - otherVector.X, 2) + pow(Y - otherVector.Y, 2));
+    }
 };
 
 constexpr string_view ToString(EngineType type)
@@ -69,18 +108,23 @@ public:
 
 };
 
-struct Car
+class Car
 {
+
+public:
     string Name;
     float MaxSpeed;
     unique_ptr<Engine> CarEngine;
+    Vector2D Position = Vector2D();
+
+public:
 
     Car() : Name("Unknown"), MaxSpeed(0.f), CarEngine(nullptr) { cout << "Car created\n"; };
     Car(string name, float speed, unique_ptr<Engine> engine = nullptr) : Name(name), MaxSpeed(speed), CarEngine(move(engine)) { cout << Name << " created\n"; };
 
     ~Car() { cout << "Car " << Name << " deleted\n"; };
 
-    void ShowCar()
+    void ShowCar() noexcept
     {
         cout << Name << "\t max speed: " << MaxSpeed << '\t';
         if (CarEngine != nullptr)
@@ -91,7 +135,16 @@ struct Car
         {
             cout << "no engine\n";
         }
-        
+    }
+
+    void Move(Vector2D DeltaMove) noexcept
+    {
+        Position + DeltaMove;
+    }
+
+    void PrintPosition() const
+    {
+        cout << Name << " is at " << Position.X << ", " << Position.Y << " point\n";
     }
 };
 
@@ -101,10 +154,18 @@ class Garage
 public:
     vector<unique_ptr<Car>> Cars;
 
+    Garage() {};
+
     void AddCar(unique_ptr<Car> car)
     {
-        Cars.emplace_back(car);
+        Cars.emplace_back(move(car));
     }
+    void AddCar()
+    {
+        unique_ptr<Car> car = make_unique<Car>();
+        Cars.emplace_back(move(car));
+    }
+
 
     void ShowCars()
     {
@@ -126,6 +187,46 @@ public:
                 fastest_car = Cars[i].get();
             }
         }
+        return fastest_car;
+    }
+
+
+    Car* GetClosestCar(Vector2D position) const
+    {
+        if (Cars.empty())
+        {
+            return nullptr;
+        }
+
+        Car* closest_car = Cars[0].get();
+        float nearestDistance = closest_car->Position.DistanceTo(position);
+        for (size_t i = 1; i < Cars.size(); i++)
+        {
+            if (Cars[i]->Position.DistanceTo(position) < nearestDistance)
+            {
+                nearestDistance = Cars[i]->Position.DistanceTo(position);
+            }
+        }
+        return closest_car;
+    }
+
+    Car* GetClosestCar(Vector2D position, float& nearestDistance) const
+    {
+        if (Cars.empty())
+        {
+            return nullptr;
+        }
+
+        Car* closest_car = Cars[0].get();
+        nearestDistance = closest_car->Position.DistanceTo(position);
+        for (size_t i = 1; i < Cars.size(); i++)
+        {
+            if (Cars[i]->Position.DistanceTo(position) < nearestDistance)
+            {
+                nearestDistance = Cars[i]->Position.DistanceTo(position);
+            }
+        }
+        return closest_car;
     }
 
 };
@@ -133,15 +234,18 @@ public:
 
 int main()
 {
-    {
-        ScoppedTimer Timer;
-        Car* MyCar = new Car("Kia Rio", 180);
-        cout << MyCar->Name << " has max speed " << MyCar->MaxSpeed << '\n';
-        delete MyCar;
 
-        {
-            Engine Engine1(220, EngineType::Gasoline);
-            unique_ptr<Engine> Engine2 = make_unique<Engine>(330, EngineType::Electricity);
-        }
+    Car* MyCar = new Car("Kia Rio", 180);
+    cout << MyCar->Name << " has max speed " << MyCar->MaxSpeed << '\n';
+    delete MyCar;
+    Engine Engine1(220, EngineType::Gasoline);
+    unique_ptr<Engine> Engine2 = make_unique<Engine>(330, EngineType::Electricity);
+    unique_ptr<Garage> Garage1 = make_unique<Garage>();
+
+    ScoppedTimer* Timer = new ScoppedTimer();
+    for (int i = 0; i < 1000; i++)
+    {
+        Garage1->AddCar();
     }
+    delete Timer;
 }
